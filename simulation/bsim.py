@@ -1259,8 +1259,8 @@ def random_walk(swarm, param):
 			swarm.agents += W
 		else:
 			print(str(i1)+ ": holding")
-			print(swarm.agents[i1])
-			swarm.headings = 0
+			print(str(i1)+ " deleted")
+			swarm.agents.pop(i1)
 
 def foraging(swarm, param):
 
