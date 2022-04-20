@@ -1304,9 +1304,9 @@ def random_walk(swarm, param):
 
 			angles = np.arctan2(vecy, vecx)
 			
-			swarm.speeds[i1] = 0
-			Wx = swarm.speeds[i1]*np.cos(angles)
-			Wy = swarm.speeds[i1]*np.sin(angles)
+			swarm.speeds[i1] = 1
+			Wx = swarm.speeds[i1]
+			Wy = swarm.speeds[i1]
 			print(str(Wx))
 			W = -np.stack((Wx, Wy), axis = 1)
 			swarm.agents *= W
