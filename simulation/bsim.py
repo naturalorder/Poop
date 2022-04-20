@@ -1217,6 +1217,7 @@ def rotate(swarm, direction, param):
 
 def random_walk(swarm, param):
 	alpha = 0.01; beta = 50
+	print("hello")
 
 	noise = param*np.random.randint(-beta, beta, (swarm.size))
 	swarm.headings += noise
