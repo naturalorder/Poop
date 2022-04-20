@@ -1219,7 +1219,7 @@ def random_walk(swarm, param):
 	for i1 in range(0, len(swarm.agents)):
 		if swarm.holding[i1] == 0:
 			alpha = 0.01; beta = 50
-			print("not holding")
+			print(str(i1) + ": not holding")
 
 			noise = param*np.random.randint(-beta, beta, (swarm.size))
 			swarm.headings += noise
@@ -1258,7 +1258,8 @@ def random_walk(swarm, param):
 			W = -np.stack((Wx, Wy), axis = 1)
 			swarm.agents += W
 		else:
-			print("holding")
+			print(str(i1)+ ": holding")
+			swarm.speed = 0
 
 def foraging(swarm, param):
 
