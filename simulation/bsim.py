@@ -65,6 +65,10 @@ class swarm(object):
 
 		dim = 0.001
 		self.agents = np.zeros((self.size,2))
+
+		self.speeds = np.ones((self.size,1))
+		self.speeds *= 0.5
+
 		self.holding = np.zeros(self.size)
 		self.boxnum = np.zeros(self.size)
 		self.headings = 0.0314*np.random.randint(-100,100 ,self.size)
