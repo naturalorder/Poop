@@ -1307,9 +1307,10 @@ def random_walk(swarm, param):
 			swarm.speeds[i1] = 0
 			Wx = swarm.speeds[i1]*np.cos(angles)
 			Wy = swarm.speeds[i1]*np.sin(angles)
-
+			print(str(Wx))
 			W = -np.stack((Wx, Wy), axis = 1)
 			swarm.agents += W
+			print(str(W))
 	
 
 def foraging(swarm, param):
