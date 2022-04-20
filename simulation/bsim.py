@@ -1216,6 +1216,9 @@ def rotate(swarm, direction, param):
 
 
 def random_walk(swarm, param):
+	n = 0
+	print(n)
+	print(swarm.agents)
 	for n in range(0, len(swarm.agents)):
 		if swarm.holding[n] == 0:
 			alpha = 0.01; beta = 50
