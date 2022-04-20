@@ -29,6 +29,7 @@ class swarm(object):
 	def __init__(self):
 
 		self.agents = []
+		self.speeds = []
 		self.speed = 0.5
 		self.size = 0
 		self.behaviour = 'none'
@@ -77,6 +78,10 @@ class swarm(object):
 		dim = 0.001
 		self.dead = np.zeros(self.size)
 		self.agents = np.zeros((self.size,2))
+
+		self.speeds = np.ones((self.size,1))
+		self.speeds *= 0.5
+
 		self.headings = 0.0314*np.random.randint(-100,100 ,self.size)
 		
 		x = np.random.uniform(-env.dimensions[1]/2, env.dimensions[1]/2, self.size)
@@ -1252,17 +1257,55 @@ def random_walk(swarm, param):
 			vecy = a.T[1]
 
 			angles = np.arctan2(vecy, vecx)
-			Wx = swarm.speed*np.cos(angles)
-			Wy = swarm.speed*np.sin(angles)
+			
+			Wx = swarm.speeds[i1]*np.cos(angles)
+			Wy = swarm.speeds[i1]*np.sin(angles)
 
 			W = -np.stack((Wx, Wy), axis = 1)
 			swarm.agents += W
 		else:
 			print(str(i1)+ ": holding")
-			print(str(i1)+ " deleted")
-			print(swarm.agents)
-			swarm.agents = np.delete(swarm.agents, i1, 0)
-			print(swarm.agents)
+			alpha = 0.01; beta = 50
+
+			noise = param*np.random.randint(-beta, beta, (swarm.size))
+			swarm.headings += noise
+
+			# Calculate new heading vector
+			gx = 1*np.cos(swarm.headings)
+			gy = 1*np.sin(swarm.headings)
+			G = -np.array([[gx[n], gy[n]] for n in range(0, swarm.size)])
+
+			# Agent avoidance
+			R = 20; r = 2; A = 1; a = 20	
+
+			a = np.zeros((swarm.size, 2))
+
+			# mag = cdist(swarm.agents, swarm.agents)
+
+			# # Compute vectors between agents
+			# diff = swarm.agents[:,:,np.newaxis]-swarm.agents.T[np.newaxis,:,:] 
+
+			# R = 5; r = 5
+			# repel = R*r*np.exp(-mag/r)[:,np.newaxis,:]*diff/(swarm.size-1)	
+			# repel = np.sum(repel, axis = 0).T
+
+			B = np.zeros((swarm.size, 2))
+			#B = beacon(swarm)
+			A = avoidance(swarm.agents, swarm.map)
+			a += A + G + B 
+
+			vecx = a.T[0]
+			vecy = a.T[1]
+
+			angles = np.arctan2(vecy, vecx)
+			
+			swarm.speeds[i1] = 0
+			Wx = swarm.speeds[i1]*np.cos(angles)
+			Wy = swarm.speeds[i1]*np.sin(angles)
+
+			W = -np.stack((Wx, Wy), axis = 1)
+			swarm.agents += W
+	
 
 def foraging(swarm, param):
 
