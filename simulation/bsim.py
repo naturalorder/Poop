@@ -546,7 +546,7 @@ class boxes(object):
 
 	# Check the state of the boxes 
 	def get_state(self, swarm, t):
-		print(str(boxes.score))
+		print(str(self.score))
 		# adjacency matrix of agents and boxes
 		mag = cdist(swarm.agents, self.boxes)
 		# Check which distances are less than detection range
@@ -564,7 +564,7 @@ class boxes(object):
 				# which box is closest?
 				closest = np.where(np.amin(mag[n]) == mag[n])
 				
-				if boxes.score == 6:
+				if self.score == 6:
 					if np.amin(mag[n]) < self.radius:
 						# box has been picked
 						self.picked[closest] = 1
@@ -583,7 +583,7 @@ class boxes(object):
 
 						swarm.boxnum[n] = closest[0][0]
 						swarm.holding[n] = 1
-						boxes.score += 1
+						self.score += 1
 				
 
 
