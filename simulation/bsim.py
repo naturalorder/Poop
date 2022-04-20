@@ -1267,7 +1267,9 @@ def random_walk(swarm, param):
 			Wy = swarm.speeds[i1]*np.sin(angles)
 
 			W = -np.stack((Wx, Wy), axis = 1)
-			swarm.agents[i1] *= W[i1]
+			for i1 in range(0, len(swarm.agents)):
+				if swarm.holding[i1] == 0:
+					swarm.agents[i1] += W[i1]
 		else:
 			print(str(i1)+ ": holding")		
 			swarm.agents[i1] = swarm.agents[i1]
