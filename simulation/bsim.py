@@ -564,15 +564,28 @@ class boxes(object):
 				# which box is closest?
 				closest = np.where(np.amin(mag[n]) == mag[n])
 				
+				if score == 6:
+					if np.amin(mag[n]) < self.radius:
+						# box has been picked
+						self.picked[closest] = 1
+
+						self.boxes[closest] = swarm.agents[n]
+
+						swarm.boxnum[n] = closest[0][0]
+						swarm.holding[n] = 1
 				# is box close enough pick up?
-				if np.amin(mag[n]) < self.radius:
-					# box has been picked
-					self.picked[closest] = 1
+				else:
+					if np.amin(mag[n]) < self.radius and self.picked[closest[0][0]] != 1 and self.collected[closest[0][0]] != 1:
+						# box has been picked
+						self.picked[closest] = 1
 
-					self.boxes[closest] = swarm.agents[n]
+						self.boxes[closest] = swarm.agents[n]
 
-					swarm.boxnum[n] = closest[0][0]
-					swarm.holding[n] = 1
+						swarm.boxnum[n] = closest[0][0]
+						swarm.holding[n] = 1
+						score += 1
+				
+
 
 			# If agent is holding a box update its position
 			if swarm.holding[n] == 1:
