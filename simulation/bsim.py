@@ -1216,10 +1216,8 @@ def rotate(swarm, direction, param):
 
 
 def random_walk(swarm, param):
-	swarm.gen_agents()
-	print(swarm.agents)
-	for n in range(0, len(swarm.agents)):
-		if swarm.holding[n] == 0:
+	for i in range(0, len(swarm.agents)):
+		if swarm.holding[i] == 0:
 			alpha = 0.01; beta = 50
 
 			noise = param*np.random.randint(-beta, beta, (swarm.size))
