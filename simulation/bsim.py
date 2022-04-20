@@ -1269,47 +1269,8 @@ def random_walk(swarm, param):
 			W = -np.stack((Wx, Wy), axis = 1)
 			swarm.agents += W
 		else:
-			print(str(i1)+ ": holding")
-			alpha = 0.01; beta = 50
-
-			noise = param*np.random.randint(-beta, beta, (swarm.size))
-			swarm.headings += noise
-
-			# Calculate new heading vector
-			gx = 1*np.cos(swarm.headings)
-			gy = 1*np.sin(swarm.headings)
-			G = -np.array([[gx[n], gy[n]] for n in range(0, swarm.size)])
-
-			# Agent avoidance
-			R = 20; r = 2; A = 1; a = 20	
-
-			a = np.zeros((swarm.size, 2))
-
-			# mag = cdist(swarm.agents, swarm.agents)
-
-			# # Compute vectors between agents
-			# diff = swarm.agents[:,:,np.newaxis]-swarm.agents.T[np.newaxis,:,:] 
-
-			# R = 5; r = 5
-			# repel = R*r*np.exp(-mag/r)[:,np.newaxis,:]*diff/(swarm.size-1)	
-			# repel = np.sum(repel, axis = 0).T
-
-			B = np.zeros((swarm.size, 2))
-			#B = beacon(swarm)
-			A = avoidance(swarm.agents, swarm.map)
-			a += A + G + B 
-
-			vecx = a.T[0]
-			vecy = a.T[1]
-
-			angles = np.arctan2(vecy, vecx)
-			
-			swarm.speeds[i1] = 1
-			Wx = swarm.speeds[i1]
-			Wy = swarm.speeds[i1]
-			print(str(Wx))
-			W = -np.stack((Wx, Wy), axis = 1)
-			swarm.agents *= W
+			print(str(i1)+ ": holding")		
+			swarm.agents = swarm.agents
 			print(str(W))
 	
 
