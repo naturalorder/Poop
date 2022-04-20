@@ -565,6 +565,7 @@ class boxes(object):
 				closest = np.where(np.amin(mag[n]) == mag[n])
 				
 				if self.score == 6:
+					self.radius = 1
 					if np.amin(mag[n]) < self.radius:
 						# box has been picked
 						self.picked[closest] = 1
