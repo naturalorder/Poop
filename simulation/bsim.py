@@ -565,7 +565,7 @@ class boxes(object):
 				closest = np.where(np.amin(mag[n]) == mag[n])
 				
 				if self.score == 6:
-					self.radius = 1
+					self.radius = 1.5
 					if np.amin(mag[n]) < self.radius:
 						# box has been picked
 						self.picked[closest] = 1
@@ -850,20 +850,13 @@ class map(object):
 		# Bounding Walls ---------------------------------
 		box = make_box(50, 50, [0, 0]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
 
-		wall = make_wall(); wall.start = [25, 0]; wall.end = [10,0]; self.obsticles.append(wall)
-		wall = make_wall(); wall.start = [10, 0]; wall.end = [10,-15]; self.obsticles.append(wall)
-		# wall = make_wall(); wall.start = [10, -15]; wall.end = [15,-15]; self.obsticles.append(wall)
+		wall = make_wall(); wall.start = [12.5, 20]; wall.end = [12.5,14]; self.obsticles.append(wall)
 
-		# upper room
-		wall = make_wall(); wall.start = [-25, 14]; wall.end = [-15,14]; self.obsticles.append(wall)
-		wall = make_wall(); wall.start = [-10, 14]; wall.end = [0,14]; self.obsticles.append(wall)
-		wall = make_wall(); wall.start = [0, 14]; wall.end = [0,25]; self.obsticles.append(wall)
-
-		wall = make_wall(); wall.start = [12.5, 25]; wall.end = [12.5,14]; self.obsticles.append(wall)
-
-
+		# bottom
 		wall = make_wall(); wall.start = [-17, -17]; wall.end = [-5,-17]; self.obsticles.append(wall)
-		wall = make_wall(); wall.start = [-17, -17]; wall.end = [-17,-10]; self.obsticles.append(wall)
+
+		# left
+		wall = make_wall(); wall.start = [-17, 0]; wall.end = [-17,5]; self.obsticles.append(wall)
 
 
 
