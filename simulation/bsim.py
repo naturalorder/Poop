@@ -570,8 +570,6 @@ class boxes(object):
 						# box has been picked
 						self.picked[closest] = 1
 
-						self.boxes[closest] = swarm.agents[n]
-
 						swarm.boxnum[n] = closest[0][0]
 						swarm.holding[n] = 1
 				# is box close enough pick up?
