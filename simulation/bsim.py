@@ -565,7 +565,7 @@ class boxes(object):
 				closest = np.where(np.amin(mag[n]) == mag[n])
 				
 				# is box close enough pick up?
-				if np.amin(mag[n]) < self.radius and self.picked[closest[0][0]] != 1 and self.collected[closest[0][0]] != 1:
+				if np.amin(mag[n]) < self.radius:
 					# box has been picked
 					self.picked[closest] = 1
 
@@ -576,14 +576,8 @@ class boxes(object):
 
 			# If agent is holding a box update its position
 			if swarm.holding[n] == 1:
+				continue
 	
-				self.boxes[int(swarm.boxnum[n])] = swarm.agents[n]
-				# Is agent in collection zone
-				if -self.collection_size <= swarm.agents[n][0] <= self.collection_size and -self.collection_size <= swarm.agents[n][1] <= self.collection_size:
-
-					self.collected[int(swarm.boxnum[n])] = 1
-					swarm.holding[n] = 0
-
 		self.tot_collected += np.sum(self.collected)
 		score = np.sum(self.collected)
 		return score
