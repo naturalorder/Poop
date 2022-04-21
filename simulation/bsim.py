@@ -584,7 +584,7 @@ class boxes(object):
 
 						swarm.boxnum[n] = closest[0][0]
 						swarm.holding[n] = 1
-						if self.discovered != True
+						if self.discovered != True:
 							self.discovered = True
 							self.score += 1
 				
