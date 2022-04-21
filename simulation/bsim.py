@@ -494,6 +494,7 @@ class boxes(object):
 		self.collection_size = 7
 		self.tot_collected = 0
 		self.score = 0
+		self.discovered = False
 
 	def set_state(self, state):
 
@@ -578,11 +579,13 @@ class boxes(object):
 						# box has been picked
 						self.picked[closest] = 1
 
-						self.boxes[closest] = swarm.agents[n]
+						# self.boxes[closest] = swarm.agents[n]
 
 						swarm.boxnum[n] = closest[0][0]
 						swarm.holding[n] = 1
-						self.score += 1
+						if self.discovered != 1
+							self.discovered = 1
+							self.score += 1
 				
 
 
