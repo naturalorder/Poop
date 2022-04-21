@@ -495,6 +495,7 @@ class boxes(object):
 		self.tot_collected = 0
 		self.score = 0
 		self.discovered = False
+		print("v1")
 
 	def set_state(self, state):
 
