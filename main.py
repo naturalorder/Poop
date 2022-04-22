@@ -1,5 +1,5 @@
 import os
-os.chdir('/Users/hp21719/Documents/GitHub/swarm_proto')
+os.chdir('C:/Users/jm/Documents/GitHub/swarm_proto')
 
 import random
 import sys
@@ -7,7 +7,6 @@ import numpy as np
 import math
 import scipy
 import matplotlib.pyplot as plt
-from celluloid import Camera
 from numpy.linalg import norm
 from scipy.spatial.distance import cdist, pdist, euclidean
 
@@ -81,7 +80,7 @@ boxes.radius = 75
     [swarm.map.obsticles[a].start[1], swarm.map.obsticles[a].end[1]], 'k-', lw=2) for a in range(len(swarm.map.obsticles))]
 
 # Set simulation duration
-timesteps = 300
+timesteps = 1500
 
 ax2.set_xlim((0, timesteps))
 ax2.set_ylim((0, 100))
