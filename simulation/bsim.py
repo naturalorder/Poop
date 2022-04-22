@@ -443,8 +443,7 @@ class target_set(object):
 		# Tracks the total targets found so far. Not this iteration.
 		score = np.sum(updated)
 		self.coverage = score/len(self.targets)	
-
-
+  
 
 		self.old_state = updated
 		return score
@@ -479,6 +478,7 @@ class target_set(object):
 
 
 # Functions and definitions for set of box objects.
+number_of_boxes = 10
 
 class boxes(object):
 
@@ -494,14 +494,14 @@ class boxes(object):
 		self.collection_size = 7
 		self.tot_collected = 0
 		self.score = 0
-		self.discovered = False
+		self.discovered = np.zeros(number_of_boxes)
 		print("v1")
 
 	def set_state(self, state):
 
 		if state == 'random':
 			
-			self.boxes = np.random.randint(-20,20, (6,2))
+			self.boxes = np.random.randint(-499, 499, (number_of_boxes,2))
 			self.picked = np.zeros(len(self.boxes))
 			self.collected = np.zeros(len(self.boxes))
 			self.broadcast = np.zeros(len(self.boxes))
@@ -511,8 +511,8 @@ class boxes(object):
 
 		if state == 'state1':
 
-			self.boxes = np.array([[-15,-8],[-10,4],[-18,7],[5,-10],[-18,20],[-16,20],[-18,18]
-									,[-5,18],[-7,18],[-9,18],[-5,20],[-5,22],[-7,20],[-7,22]
+			self.boxes = np.array([[-150,-800],[-100,400],[-180,700],[500,-100],[-1800,2000],[-1600,2000],[-180,1800]
+									,[-500,180],[-700,18],[-900,1800],[-2400,2000],[-4500,22],[-7,20],[-7,22]
 									,[14,-5],[16,-5],[18,-5],[20,-5],[22,-5],[14,-7],[16,-7]
 									,[18,-7],[20,-7],[22,-7],[14,-9],[16,-9],[18,-9],[20,-9]
 									,[20,-20],[10,-20],[21,-17]
@@ -548,7 +548,7 @@ class boxes(object):
 
 	# Check the state of the boxes 
 	def get_state(self, swarm, t):
-		print(str(self.score))
+		# print(str(self.score))
 		# adjacency matrix of agents and boxes
 		mag = cdist(swarm.agents, self.boxes)
 		# Check which distances are less than detection range
@@ -558,6 +558,43 @@ class boxes(object):
 		# convert to boolean, targets with 0 detections set to false.
 		detected = detected > 0
 
+
+
+		# for n in range(0, len(swarm.agents)):
+    
+		# 	# Is the agent holding a box?
+		# 	if swarm.holding[n] == 0: 
+
+		# 		# which box is closest?
+		# 		closest = np.where(np.amin(mag[n]) == mag[n])
+				
+		# 		if self.score == 6:
+		# 			self.radius = 1.5
+		# 			if np.amin(mag[n]) < self.radius:
+		# 				# box has been picked
+		# 				self.picked[closest] = 1
+
+		# 				swarm.boxnum[n] = closest[0][0]
+		# 				swarm.holding[n] = 1
+		# 		# is box close enough pick up?
+		# 		else:
+		# 			if np.amin(mag[n]) < self.radius and self.picked[closest[0][0]] != 1 and self.collected[closest[0][0]] != 1:
+		# 				# box has been picked
+		# 				self.picked[closest] = 1
+
+		# 				self.boxes[closest] = swarm.agents[n]
+
+		# 				swarm.boxnum[n] = closest[0][0]
+		# 				swarm.holding[n] = 1
+		# 				self.score += 1
+				
+
+
+		# 	# If agent is holding a box update its position
+		# 	if swarm.holding[n] == 1:
+		# 		continue
+
+
 		for n in range(0, len(swarm.agents)):
 
 			# Is the agent holding a box?
@@ -566,27 +603,20 @@ class boxes(object):
 				# which box is closest?
 				closest = np.where(np.amin(mag[n]) == mag[n])
 				
-				if self.score == 6:
-					self.radius = 1.5
-					if np.amin(mag[n]) < self.radius:
-						# box has been picked
-						self.picked[closest] = 1
-
-						swarm.boxnum[n] = closest[0][0]
-						swarm.holding[n] = 1
+				
 				# is box close enough pick up?
-				else:
-					if np.amin(mag[n]) < self.radius and self.picked[closest[0][0]] != 1 and self.collected[closest[0][0]] != 1:
-						# box has been picked
-						self.picked[closest] = 1
+				
+				if np.amin(mag[n]) < self.radius and self.picked[closest[0][0]] != 1 and self.collected[closest[0][0]] != 1:
+					# box has been picked
 
-						# self.boxes[closest] = swarm.agents[n]
+					self.picked[closest] = 1
+					self.collected[closest] = 1
+					#self.boxes[closest] = swarm.agents[n]
 
-						swarm.boxnum[n] = closest[0][0]
-						swarm.holding[n] = 1
-						if self.discovered != True:
-							self.discovered = True
-							self.score += 1
+					swarm.boxnum[n] = closest[0][0]
+					swarm.holding[n] = 1
+					
+					
 				
 
 
@@ -852,15 +882,15 @@ class map(object):
 
 	def env1(self):
 		# Bounding Walls ---------------------------------
-		box = make_box(50, 50, [0, 0]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+		box = make_box(999, 999, [0, 0]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
 
-		wall = make_wall(); wall.start = [12.5, 20]; wall.end = [12.5,14]; self.obsticles.append(wall)
+		# wall = make_wall(); wall.start = [12.5, 20]; wall.end = [12.5,14]; self.obsticles.append(wall)
 
 		# bottom
-		wall = make_wall(); wall.start = [-17, -17]; wall.end = [-5,-17]; self.obsticles.append(wall)
+		# wall = make_wall(); wall.start = [-17, -17]; wall.end = [-5,-17]; self.obsticles.append(wall)
 
 		# left
-		wall = make_wall(); wall.start = [-17, 0]; wall.end = [-17,5]; self.obsticles.append(wall)
+		# wall = make_wall(); wall.start = [-17, 0]; wall.end = [-17,5]; self.obsticles.append(wall)
 
 
 
@@ -1191,9 +1221,10 @@ def aggregate(swarm, param, noise):
 	swarm.agents += W 
 	
 
+hover = True
 
 def rotate(swarm, direction, param):
-
+	# print('rot', swarm, direction, '\n')
 	noise = param*np.random.randint(direction[0], direction[1], swarm.size)
 	swarm.headings += noise
 
@@ -1203,7 +1234,7 @@ def rotate(swarm, direction, param):
 	G = -np.array([[gx[n], gy[n]] for n in range(0, swarm.size)])
 
 	# Agent avoidance
-	R = 2; r = 2; A = 1; a = 20
+	R = 10; r = 7; A = 1; a = 20
 	# Compute euclidean distance between agents
 	# mag = cdist(swarm.agents, swarm.agents)
 	# # Compute vectors between agents
@@ -1215,7 +1246,20 @@ def rotate(swarm, direction, param):
 	B = np.zeros((swarm.size, 2))
 	#B = beacon(swarm)
 	A = avoidance(swarm.agents, swarm.map)
-	a += G + A + B
+ 
+ 	# Compute euclidean distance between agents
+	mag = cdist(swarm.agents, swarm.agents)
+
+	# Compute vectors between agents
+	diff = swarm.agents[:,:,np.newaxis]-swarm.agents.T[np.newaxis,:,:] 
+ 
+	repel = R*r*np.exp(-mag/r)[:,np.newaxis,:]*diff/(swarm.size-1)
+	repel = np.sum(repel, axis = 0).T
+	
+	# attract = A*a*np.exp(-mag/a)[:,np.newaxis,:]*diff/(swarm.size-1)	
+	# attract = np.sum(attract, axis = 0).T
+ 
+	a += G + A + B + repel #+ attract
 
 	vecx = a.T[0]
 	vecy = a.T[1]
@@ -1225,14 +1269,25 @@ def rotate(swarm, direction, param):
 	Wy = swarm.speed*np.sin(angles)
 
 	W = -np.array([[Wx[n], Wy[n]] for n in range(0, swarm.size)])
-	swarm.agents += W 
+	
+	if True == hover:
+		for i1 in range(0, len(swarm.agents)):
+			if swarm.holding[i1] == 0:
+				swarm.agents[i1] += W[i1]
+			else:
+				# print(str(i1)+ ": holding")		
+				swarm.agents[i1] = swarm.agents[i1]
+				# print(str(swarm.agents[i1]))
+	else:
+		swarm.agents += W
+       
 
 
 def random_walk(swarm, param):
 	for i1 in range(0, len(swarm.agents)):
 		if swarm.holding[i1] == 0:
 			alpha = 0.01; beta = 50
-			print(str(i1) + ": not holding")
+			# print(str(i1) + ": not holding")
 
 			noise = param*np.random.randint(-beta, beta, (swarm.size))
 			swarm.headings += noise
@@ -1273,10 +1328,10 @@ def random_walk(swarm, param):
 			for i1 in range(0, len(swarm.agents)):
 				if swarm.holding[i1] == 0:
 					swarm.agents[i1] += W[i1]
-		else:
-			print(str(i1)+ ": holding")		
-			swarm.agents[i1] = swarm.agents[i1]
-			print(str(swarm.agents[i1]))
+				else:
+					# print(str(i1)+ ": holding")		
+					swarm.agents[i1] = swarm.agents[i1]
+					# print(str(swarm.agents[i1]))
 	
 
 def foraging(swarm, param):

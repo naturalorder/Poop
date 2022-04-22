@@ -1,9 +1,13 @@
+import os
+os.chdir('/Users/hp21719/Documents/GitHub/swarm_proto')
+
 import random
 import sys
 import numpy as np
 import math
 import scipy
 import matplotlib.pyplot as plt
+from celluloid import Camera
 from numpy.linalg import norm
 from scipy.spatial.distance import cdist, pdist, euclidean
 
@@ -13,8 +17,9 @@ import behtree.tree_nodes as tree_nodes
 import evo.evaluate as evaluate
 import evo.operators as op
 
-from matplotlib import animation, rc, rcParams
-rcParams['animation.embed_limit'] = 2**128
+from matplotlib import animation
+# rc, rcParams
+# rcParams['animation.embed_limit'] = 2**128
 from IPython.display import HTML
 
 
@@ -23,7 +28,7 @@ from IPython.display import HTML
 fig, (ax1, ax2) = plt.subplots(nrows=1,ncols=2, figsize=(16,8), dpi=70, facecolor='w', edgecolor='k')
 plt.close()
 
-dim = 30
+dim = 500
 ax1.set_xlim((-dim, dim))
 ax1.set_ylim((-dim, dim))
 
@@ -51,10 +56,10 @@ def init():
 
 
 # Create the swarm
-swarmsize = 50 # Here you can change the size of the swarm.
+swarmsize = 15 # Here you can change the size of the swarm.
 swarm = bsim.swarm()
 swarm.size = swarmsize
-swarm.speed = 5
+swarm.speed = 4
 swarm.gen_agents()
 
 # Create the environment
@@ -67,7 +72,7 @@ swarm.map = env
 boxes = bsim.boxes()
 boxes.set_state('random')
 boxes.sequence = False
-boxes.radius = 3
+boxes.radius = 75
 
 # Plot collection reg
 
@@ -76,7 +81,7 @@ boxes.radius = 3
     [swarm.map.obsticles[a].start[1], swarm.map.obsticles[a].end[1]], 'k-', lw=2) for a in range(len(swarm.map.obsticles))]
 
 # Set simulation duration
-timesteps = 50
+timesteps = 300
 
 ax2.set_xlim((0, timesteps))
 ax2.set_ylim((0, 100))
@@ -84,13 +89,13 @@ ax2.set_yticks(np.arange(0, 100, 10))
 ax2.grid()
 
 # Add agent motion noise
-noise = np.random.uniform(-.1,.1,(timesteps, swarm.size, 2))
+noise = np.random.uniform(-.1,.1,(timesteps, swarm.size, 4))
 score = 0
 
 # Here you can change the swarms behvaior
-swarm.behaviour = 'rol_anti'
+swarm.behaviour = 'rot_anti'
 # This value adjusts the rate the agents change their headings
-swarm.param = 0.2
+swarm.param = 0.04
 
 
 field, grid = bsim.potentialField_map(swarm.map)
@@ -122,5 +127,6 @@ anim = animation.FuncAnimation(fig, animate, init_func=init,
                             frames=timesteps, interval=100, blit=True, cache_frame_data = False)
 
 # Note: below is the part which makes it work on Colab
-rc('animation', html='jshtml')
-anim
+# rc('animation', html='jshtml')
+
+anim.save('sim_animation.gif', writer='ffmpeg', fps=25, dpi=200)
