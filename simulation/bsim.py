@@ -7,8 +7,6 @@ import pickle
 import string
 import numpy as np
 import logging
-import time
-import random
 import math
 import scipy
 import matplotlib.pyplot as plt
@@ -63,7 +61,7 @@ class swarm(object):
 
 	def gen_agents(self):
 
-		dim = 0.001
+		dim = 1
 		self.agents = np.zeros((self.size,2))
 
 		self.speeds = np.ones((self.size,1))
@@ -96,7 +94,7 @@ class swarm(object):
 
 	def reset(self):
 
-		dim = 0.001
+		dim = 1
 		self.agents = np.zeros((self.size,2))
 		self.holding = np.zeros(self.size)
 		self.boxnum = np.zeros(self.size)
@@ -478,11 +476,17 @@ class target_set(object):
 
 
 # Functions and definitions for set of box objects.
-number_of_boxes = 10
+class poacher(object):
+
+	def __init__(self):
+		self.hover = False
+  
+poaching = poacher()
 
 class boxes(object):
 
 	def __init__(self):
+		self.number_of_boxes = 2
 		self.boxes = []
 		self.radius = 0
 		self.picked = []
@@ -494,14 +498,15 @@ class boxes(object):
 		self.collection_size = 7
 		self.tot_collected = 0
 		self.score = 0
-		self.discovered = np.zeros(number_of_boxes)
-		print("v1")
+		self.old_score = 0
+		self.discovered = np.zeros(self.number_of_boxes)
+		# print("v1")
 
 	def set_state(self, state):
 
 		if state == 'random':
 			
-			self.boxes = np.random.randint(-499, 499, (number_of_boxes,2))
+			self.boxes = np.random.randint(-2500, 2500, (self.number_of_boxes,2))
 			self.picked = np.zeros(len(self.boxes))
 			self.collected = np.zeros(len(self.boxes))
 			self.broadcast = np.zeros(len(self.boxes))
@@ -614,7 +619,8 @@ class boxes(object):
 					#self.boxes[closest] = swarm.agents[n]
 
 					swarm.boxnum[n] = closest[0][0]
-					swarm.holding[n] = 1
+					if True == poaching.hover:
+						swarm.holding[n] = 1
 					
 					
 				
@@ -626,6 +632,11 @@ class boxes(object):
 	
 		self.tot_collected += np.sum(self.collected)
 		score = np.sum(self.collected)
+		if score != self.old_score:
+			self.old_score = score
+			print(score)
+
+		
 		return score
 
 
@@ -882,7 +893,7 @@ class map(object):
 
 	def env1(self):
 		# Bounding Walls ---------------------------------
-		box = make_box(999, 999, [0, 0]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
+		box = make_box(5000, 5000, [0, 0]); [self.obsticles.append(box.walls[x]) for x in range(0, len(box.walls))]
 
 		# wall = make_wall(); wall.start = [12.5, 20]; wall.end = [12.5,14]; self.obsticles.append(wall)
 
@@ -1220,13 +1231,26 @@ def aggregate(swarm, param, noise):
 	W = -np.stack((Wx, Wy), axis = 1)
 	swarm.agents += W 
 	
+# class rotate_loop(object):
 
-hover = True
+# 	def __init__(self):
+# 		self.rotate_loop_count = 0
+# 		self.randomheading_interval = 60#seconds
+  
+# r_l = rotate_loop()
 
 def rotate(swarm, direction, param):
 	# print('rot', swarm, direction, '\n')
 	noise = param*np.random.randint(direction[0], direction[1], swarm.size)
-	swarm.headings += noise
+	# alpha = 0.01; beta = 50
+	# if r_l.rotate_loop_count == r_l.randomheading_interval:
+	# 	noise2 = 0.005*np.random.randint(-beta, beta, (swarm.size))
+	# 	r_l.rotate_loop_count = 0
+	# 	print('rand_dir')
+	# else:
+	# 	noise2 = 0
+	# 	r_l.rotate_loop_count = r_l.rotate_loop_count +1 
+	swarm.headings +=  noise #+ noise2
 
 	# Calculate new heading vector
 	gx = 1*np.cos(swarm.headings)
@@ -1234,7 +1258,7 @@ def rotate(swarm, direction, param):
 	G = -np.array([[gx[n], gy[n]] for n in range(0, swarm.size)])
 
 	# Agent avoidance
-	R = 10; r = 7; A = 1; a = 20
+	R = 10; r = 60#600/swarm.size
 	# Compute euclidean distance between agents
 	# mag = cdist(swarm.agents, swarm.agents)
 	# # Compute vectors between agents
@@ -1256,10 +1280,11 @@ def rotate(swarm, direction, param):
 	repel = R*r*np.exp(-mag/r)[:,np.newaxis,:]*diff/(swarm.size-1)
 	repel = np.sum(repel, axis = 0).T
 	
-	# attract = A*a*np.exp(-mag/a)[:,np.newaxis,:]*diff/(swarm.size-1)	
-	# attract = np.sum(attract, axis = 0).T
+	#At = 10; at = 25
+	#attract = At*at*np.exp(-mag/at)[:,np.newaxis,:]*diff/(swarm.size-1)	
+	#attract = np.sum(attract, axis = 0).T
  
-	a += G + A + B + repel #+ attract
+	a += G + A + B + repel #- attract
 
 	vecx = a.T[0]
 	vecy = a.T[1]
@@ -1270,7 +1295,7 @@ def rotate(swarm, direction, param):
 
 	W = -np.array([[Wx[n], Wy[n]] for n in range(0, swarm.size)])
 	
-	if True == hover:
+	if True == poaching.hover:
 		for i1 in range(0, len(swarm.agents)):
 			if swarm.holding[i1] == 0:
 				swarm.agents[i1] += W[i1]
